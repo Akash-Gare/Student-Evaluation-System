@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Performance Predictor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<div class="card">
+<body>
+  <h2>Student Performance Predictor</h2>
+
+  <label>Sex:</label>
+  <select id="sex">
+    <option value="M">Male</option>
+    <option value="F">Female</option>
+  </select><br><br>
+
+  <label>Address:</label>
+  <select id="address">
+    <option value="U">Urban</option>
+    <option value="R">Rural</option>
+  </select><br><br>
+
+  <input id="age" placeholder="Age" type="number" /><br><br>
+  <input id="studytime" placeholder="Study Time (1-4)" type="number" /><br><br>
+  <input id="failures" placeholder="Failures" type="number" /><br><br>
+  <input id="absences" placeholder="Absences" type="number" /><br><br>
+
+  <button onclick="predict()">Predict</button>
+
+  <h3 id="result"></h3>
+</div>
+
+
+  <script>
+    async function predict() {
+      const data = {
+        school: "GP",
+        sex: document.getElementById("sex").value,
+        age: parseInt(document.getElementById("age").value),
+        address: document.getElementById("address").value,
+        famsize: "GT3",
+        Pstatus: "T",
+        Medu: 2,
+        Fedu: 2,
+        Mjob: "services",
+        Fjob: "services",
+        reason: "course",
+        guardian: "mother",
+        traveltime: 1,
+        studytime: parseInt(document.getElementById("studytime").value),
+        failures: parseInt(document.getElementById("failures").value),
+        schoolsup: "no",
+        famsup: "yes",
+        paid: "no",
+        activities: "yes",
+        nursery: "yes",
+        higher: "yes",
+        internet: "yes",
+        romantic: "no",
+        famrel: 4,
+        freetime: 3,
+        goout: 2,
+        Dalc: 1,
+        Walc: 1,
+        health: 5,
+        absences: parseInt(document.getElementById("absences").value)
+      };
+
+      const res = await fetch("http://127.0.0.1:8000/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      const result = await res.json();
+      document.getElementById("result").innerText =
+        "Result: " + result.result + " (Confidence: " + result.confidence.toFixed(2) + ")";
+       
+     const el = document.getElementById("result");
+     el.innerText =
+    "Result: " + result.result + " (Confidence: " + result.confidence.toFixed(2) + ")";
+    el.className = result.result === "Pass" ? "pass" : "fail";
+
+
+    
+    }
+  </script>
+</body>
+</html>
